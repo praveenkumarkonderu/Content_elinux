@@ -1,0 +1,67 @@
+AM335x Booting Process (Simple Explanation)
+
+1. ROM Code (Inside SoC)
+------------------------
+- Stored inside the AM335x chip (internal ROM).
+- Runs first when powered ON.
+- Checks boot source (eMMC, SD card, UART, USB).
+- Loads the file named "MLO" (SPL) into internal SRAM.
+
+2. SPL (MLO - Secondary Program Loader)
+---------------------------------------
+- Small version of U-Boot that fits in internal SRAM (~110 KB).
+- Initializes DDR RAM.
+- Loads the full U-Boot image from SD/eMMC into DDR.
+- Jumps to U-Boot.
+
+3. U-Boot (Full Bootloader)
+---------------------------
+- Runs from DDR.
+- Initializes peripherals (MMC, Ethernet, USB, etc.).
+- Loads Linux kernel, Device Tree (DTB), and RootFS (optional).
+- Passes control to Linux kernel.
+
+4. Linux Kernel
+----------------
+- Initializes system drivers and hardware.
+- Mounts the Root Filesystem (RootFS).
+- Starts the init process (PID 1).
+
+5. Root Filesystem (RootFS)
+---------------------------
+- Contains user programs, libraries, and configurations.
+- After mounting RootFS, Linux is fully booted.
+
+Simplified Boot Flow
+--------------------
+Power ON
+   ↓
+[ROM Code]
+   ↓
+  loads → MLO (SPL)
+   ↓
+[SPL]
+   → init DDR
+   → load U-Boot
+   ↓
+[U-Boot]
+   → load Kernel + DTB + RootFS
+   ↓
+[Linux Kernel]
+   → mounts RootFS
+   ↓
+[User Space]
+   → login / application
+
+Typical SD Card Files
+----------------------
+| Boot Stage | File Name              | Location          |
+|-------------|-----------------------|-------------------|
+| SPL         | MLO                   | SD card root      |
+| U-Boot      | u-boot.img            | /boot             |
+| Kernel      | zImage or uImage      | /boot             |
+| Device Tree | am335x-boneblack.dtb  | /boot             |
+| RootFS      | filesystem directories| 2nd partition     |
+
+Summary:
+ROM → MLO(SPL) → U-Boot → Linux Kernel → RootFS → User Space
