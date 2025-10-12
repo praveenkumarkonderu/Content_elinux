@@ -1,0 +1,68 @@
+build tools
+sudo apt-get install gawk wget git diffstat unzip texinfo gcc-multilib build-essential chrpath socat \
+cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 \
+libegl1-mesa libsdl1.2-dev xterm bison flex libssl-dev libgnutls28-dev
+
+sudo apt install u-boot-tools
+
+Arm7 - Toolchain Installation
+sudo apt install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
+
+
+*************************U-boot Compilation ***************************************************
+STEP 1: 
+distclean : deletes all the previously compiled/generated object files. 
+
+make CROSS_COMPILE=arm-linux-gnueabihf- distclean
+
+STEP 2 : apply board default configuration for uboot
+
+make CROSS_COMPILE=arm-linux-gnueabihf- am335x_boneblack_defconfig
+
+STEP 3 : run menuconfig, if you want to do any settings other than default configuration . 
+
+make CROSS_COMPILE=arm-linux-gnueabihf-  menuconfig
+
+
+STEP 4 : compile 
+
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j4  // -j4(4 core machine) will instruct the make tool to spawn 4 threads
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j8  // -j8(8 core machine) will instruct the make tool to spawn 8 threads
+
+
+************************* linux compilation ***************************************************
+STEP 1:
+ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- distclean
+
+STEP 2:
+ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- bb.org_defconfig
+for 4.11 use omap2plus_defconfig
+
+STEP 3:
+ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
+
+STEP 4:
+ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- uImage dtbs LOADADDR=0x80008000 -j4
+
+STEP 5:
+ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j4 modules
+
+STEP 6:
+ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=<path of the RFS> modules_install
+
+
+************************* Busy box compilation ***************************************************
+
+STEP 1: download busybox 
+
+STEP 2 : Apply default configuration
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- defconfig
+
+STEP 3 : change default settings if you want 
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
+
+STEP 4 : generate the busy box binary and minimal file system 
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- CONFIG_PREFIX=<install_path> install
+
+
+

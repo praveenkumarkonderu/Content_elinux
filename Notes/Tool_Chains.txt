@@ -1,0 +1,35 @@
+Tool Chains:
+
+Build  -> The machine where the tool chain is build or created 
+						or 
+		  Machine building the tool chain
+		  
+Host   -> The Machine where the tool chain is used to build target application 
+						or
+		  Machine where tool chain is running
+
+Target -> The Mahcine where the target applcation which is build by toolchain is running
+
+Native Toolchain 
+
+        Condition: build == host == target (Ex:GCC)
+
+        Built and used on the same machine; useful for updated components on the same architecture.
+
+Cross Toolchain
+
+        Condition: build == host != target
+
+        Built and run on the build/host machine, but outputs code for a different target machine.
+
+Cross-Native Toolchain
+
+        Condition: build != host == target
+
+        Built on one machine (build), runs on another (host), but targets the host's own architecture; useful for porting or when build machine is much faster.
+
+Canadian Cross Toolchain
+
+        Condition: build != host != target
+
+        Built on one machine, runs on a second machine, targets a third; used when the build environment is different from both the host and target (often for efficiency or flexibility).
