@@ -1,13 +1,17 @@
-build tools
+Build Tools
 sudo apt-get install gawk wget git diffstat unzip texinfo gcc-multilib build-essential chrpath socat \
 cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 \
-libegl1-mesa libsdl1.2-dev xterm bison flex libssl-dev libgnutls28-dev
+libegl1-mesa libsdl1.2-dev xterm bison flex libssl-dev libgnutls28-dev libncurses5-dev libncursesw5-dev
 
 sudo apt install u-boot-tools
 
 Arm7 - Toolchain Installation
 sudo apt install gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
 
+Clone u-boot repo:
+git clone https://github.com/beagleboard/u-boot.git
+git branch
+git checkout v2024.10-Beagle  #you can checkout to any branch
 
 *************************U-boot Compilation ***************************************************
 STEP 1: 
@@ -17,7 +21,7 @@ make CROSS_COMPILE=arm-linux-gnueabihf- distclean
 
 STEP 2 : apply board default configuration for uboot
 
-make CROSS_COMPILE=arm-linux-gnueabihf- am335x_boneblack_defconfig
+arm-linux-gnueabihf-gcc am335x_boneblack_defconfig
 
 STEP 3 : run menuconfig, if you want to do any settings other than default configuration . 
 
