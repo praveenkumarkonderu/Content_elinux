@@ -21,7 +21,7 @@ make CROSS_COMPILE=arm-linux-gnueabihf- distclean
 
 STEP 2 : apply board default configuration for uboot
 
-arm-linux-gnueabihf-gcc am335x_boneblack_defconfig
+arm-linux-gnueabihf-gcc am335x_evm_defconfig
 
 STEP 3 : run menuconfig, if you want to do any settings other than default configuration . 
 
