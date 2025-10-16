@@ -23,7 +23,7 @@ STEP 2 : apply board default configuration for uboot
 
 make CROSS_COMPILE=arm-linux-gnueabihf- am335x_evm_defconfig
 
-STEP 3 : run menuconfig, if you want to do any settings other than default configuration . 
+STEP 3(optional) : run menuconfig, if you want to do any settings other than default configuration . 
 
 make CROSS_COMPILE=arm-linux-gnueabihf-  menuconfig
 
