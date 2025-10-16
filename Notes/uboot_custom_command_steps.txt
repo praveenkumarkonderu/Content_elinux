@@ -1,0 +1,68 @@
+Adding a Custom U-Boot Command (with Kconfig Option)
+=====================================================
+
+Step 1 — Create the command file
+--------------------------------
+Create a new file: cmd/myhello.c
+
+#include <command.h>
+
+static int do_hello(struct cmd_tbl *cmdtp, int flag, int argc,
+                   char *const argv[])
+{
+        printf("Hello from my custom command\n");
+        return 0;
+
+}
+U_BOOT_CMD(
+        myhello,CONFIG_SYS_MAXARGS,0,do_hello,
+        "testing my cusom command",
+        "\n"
+        "       - print brief description of all commands\n"
+        "help command ...\n"
+        "       - print detailed usage of 'command'"
+);
+
+
+
+
+Step 2 — Add a Kconfig entry
+----------------------------
+Edit cmd/Kconfig and add:
+
+config CMD_MYHELLO
+    bool "Enable myhello command"
+    help
+      Enable this command to print a simple hello message for testing.
+
+
+Step 3 — Update Makefile
+------------------------
+Edit cmd/Makefile and add:
+
+obj-$(CONFIG_CMD_MYHELLO) += myhello.o
+
+
+Step 4 — Enable the command
+---------------------------
+Run:
+    make CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
+
+Navigate to:
+    Command line interface  --->
+        [*] Enable myhello command
+
+Or manually add to .config:
+    CONFIG_CMD_MYHELLO=y
+
+
+Step 5 — Rebuild and test
+-------------------------
+Rebuild U-Boot:
+    make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j4
+
+Test at U-Boot prompt:
+    => myhello
+    Hello from my custom command
+
+If you disable CONFIG_CMD_MYHELLO, the command will not appear in 'help'.
