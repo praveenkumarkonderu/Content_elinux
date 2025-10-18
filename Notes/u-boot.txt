@@ -1,0 +1,60 @@
+#Adding Uboot commands
+
+#include <command.h>
+
+static int do_hello(struct cmd_tbl *cmdtp, int flag, int argc,
+                   char *const argv[])
+{
+        printf("Hello from my custom command\n");
+        return 0;
+
+}
+U_BOOT_CMD(
+        myhello,CONFIG_SYS_MAXARGS,0,do_hello,
+        "testing my cusom command",
+        "\n"
+        "       - print brief description of all commands\n"
+        "help command ...\n"
+        "       - print detailed usage of 'command'"
+);
+
+
+Global GPIO number = (Bank number × 32) + Pin number
+
+=> fatload mmc 0:1 0x82000000 zImage
+=> fatload mmc 0:1 0x88000000 am335x-boneblack.dtb
+=> bootz 0x82000000 - 0x88000000
+
+=> mmc dev 0:1
+=> fatload mmc 0:1 0x82000000 zImage
+=> fatload mmc 0:1 0x88000000 am335x-boneblack.dtb
+=> setenv bootargs console=ttyO0,115200n8 root=/dev/mmcblk0p2 rw rootfstype=ext4 rootwait
+=> bootz 0x82000000 - 0x88000000
+
+setenv bootargs console=ttyO0,115200n8
+
+Need of rellocation:
+Why do we need SPL relocation?
+
+SPL is very small and usually loaded into on-chip SRAM (internal RAM) or another small memory area that is:
+Limited in size (tens of KB to hundreds of KB)
+Temporary (some SoCs overwrite it later)
+The full U-Boot cannot run in such a small memory. So SPL:
+Initializes DRAM (external memory)
+Loads the full U-Boot into DRAM
+Optionally relocates itself into DRAM to run from there, because:
+On-chip SRAM is too small for all features
+Running from DRAM is faster
+Certain drivers (like SPI, MMC, networking) need more space
+So relocation ensures SPL has enough memory to operate and can prepare full U-Boot.
+
+Why full U-Boot also relocates??
+
+U-Boot proper is usually relocated too:
+Boot ROM / SPL may load U-Boot into temporary memory
+U-Boot wants to run in its preferred location in DRAM for:
+Large stack
+Heap allocation (malloc)
+Device model (DM) structures
+Environment storage
+During relocation, all absolute addresses are updated (GD->relocaddr, gd->start_addr_sp).
