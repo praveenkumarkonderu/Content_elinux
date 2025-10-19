@@ -1,0 +1,37 @@
+#include <linux/module.h>   // Needed by all modules
+#include <linux/kernel.h>   // Needed for KERN_INFO
+#include <linux/init.h>     // Needed for macros
+
+static int __init hello_init(void)
+{
+    printk(KERN_INFO "Hello, BeagleBone World!\n");
+    return 0;   // 0 means successful loading
+}
+
+static void __exit hello_exit(void)
+{
+    printk(KERN_INFO "Goodbye, BeagleBone!\n");
+}
+
+module_init(hello_init);
+module_exit(hello_exit);
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Praveen");
+MODULE_DESCRIPTION("A simple Hello World kernel module");
+
+update makefile
+obj-$(CONFIG_MYMOD_TEST)        += mymod.o
+
+update Kconfig
+
+config MYMOD_TEST
+        tristate "mymod testing"
+        help
+          This is my mod sample test
+
+
+
+select from menuconfig  and build the module using below command
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -C. M=/drivers  modules -j8
+

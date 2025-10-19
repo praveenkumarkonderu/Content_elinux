@@ -56,13 +56,16 @@ STEP 4:
  make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- zImage dtbs -j8
 
 STEP 5:
- make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j8 modules
+ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -C. M=/drivers  modules -j8
 
 STEP 6:
  make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=<path of the RFS> modules_install
 
 
 ************************* Busy box compilation ***************************************************
+
+git clone https://github.com/mirror/busybox.git
+git checkout 1_36_stable
 
 STEP 1: download busybox (1_36_stable)
 
@@ -74,6 +77,15 @@ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- menuconfig
 
 STEP 4 : generate the busy box binary and minimal file system 
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- CONFIG_PREFIX=<install_path> install -j8
+
+
+****************************Buildroot************************************
+
+git clone https://github.com/buildroot/buildroot.git
+cd buildroot
+make beaglebone_defconfig
+make menuconfig
+make -j8
 
 
 
