@@ -1,0 +1,72 @@
+Yocto Project
+ ├── OpenEmbedded-Core (OE-Core)
+ ├── Poky
+ ├── BitBake (fetch,unpack,patch,configure,compile,install,packaging)
+ ├── Meta-layers (meta-yocto, meta-poky, etc.)
+
+Yocto = OpenEmbedded + BitBake + tools + policies + reference layers
+
+
+OpenEmbedded-Core (OE-Core)
+
+This is the heart (core) set of recipes and classes.
+Maintained by both the OpenEmbedded community and the Yocto Project.
+
+Contains:
+Base recipes (for gcc, glibc, busybox, etc.)
+Core classes (base.bbclass, autotools.bbclass, etc.)
+Common configuration and policies.
+It’s meant to be reused by any build system that uses BitBake — not just Yocto.
+
+
+Poky:
+
+Poky is a reference distribution built on top of OE-Core.
+It’s what you get when you clone from the Yocto Project Git
+
+OE-Core (meta/)
+BitBake
+meta-poky (Yocto’s reference distro configs)
+meta-yocto-bsp (example BSPs for qemu)
+
+.bb,.bbclass,.bbappend
+.inc, .conf
+
+test.bb
+
+test.bbappend
+
+BitBake:
+The build engine that reads .bb and .bbclass files.
+Can be used standalone or inside Poky.
+Think of it as the compiler of recipes.
+
+source oe-init-build-env #setting up env to enable toolslike bitbake Etc.
+
+TARGET_ARCH	Target CPU architecture		arm, aarch64, x86_64
+TARGET_OS	Target OS			linux, linux-gnueabi
+TARGET_PREFIX	Compiler prefix			arm-poky-linux-gnueabi-
+TARGET_CC	Actual compiler command		${TARGET_PREFIX}gcc
+CC		Wrapper for target compiler	${TARGET_CC}
+
+
+Yocto build steps:
+Install below packages: refer Yocto Mega manual in google
+
+sudo apt install build-essential chrpath cpio debianutils diffstat file gawk gcc git iputils-ping libacl1 liblz4-tool locales python3 python3-git python3-jinja2 python3-pexpect python3-pip python3-subunit socat texinfo unzip wget xz-utils zstd
+
+
+Clone poky:
+git clone https://github.com/yoctoproject/poky.git
+cd poky/
+git checkout scrathgap
+source oe-init-build-env
+
+Inside build/conf/local.conf
+set MACHINE ?= beaglebone-yocto
+
+trigger build
+bitbake core-image-minimal
+
+After some hours verify build success and check build/tmp/deploy/images/beaglebone-yocto
+for all bins

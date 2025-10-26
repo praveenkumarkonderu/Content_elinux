@@ -1,0 +1,18 @@
+
+
+Peripheral driver/client/high level/
+
+Contoller driver/host driver/platform driver/adapter/
+
+[ Device Tree (.dts) ]
+        ↓
+[ Kernel parses DTB ]
+        ↓
+[ I2C core creates i2c_client for each device node ]
+        ↓
+[ Driver registers via i2c_add_driver() ]
+        ↓
+[ I2C core matches device ↔ driver ]
+        ↓
+[ I2C core calls driver->probe() ]
+
