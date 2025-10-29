@@ -1,0 +1,73 @@
+sudo apt install tftpd-hpa
+sudo systemctl enable tftpd-hpa
+sudo systemctl start tftpd-hpa
+
+sudo nano /etc/default/tftpd-hpa
+
+	TFTP_USERNAME="tftp"
+	TFTP_DIRECTORY="/var/lib/tftpboot"
+	TFTP_ADDRESS="0.0.0.0:69"
+	TFTP_OPTIONS="--secure"
+
+sudo mkdir -p /var/lib/tftpboot
+sudo chmod -R 777 /var/lib/tftpboot
+sudo systemctl restart tftpd-hpa
+
+	setenv serverip 192.168.7.10
+	setenv ipaddr 192.168.7.20
+
+Test from u-boot:
+	tftp 0x82000000 samplefile
+
+NFS:
+	sudo apt update
+	sudo apt install nfs-kernel-server -y
+
+
+sudo mkdir -p /srv/nfs/rootfs
+
+extract RFS to above 
+sudo tar -xvjf core-image-minimal-beaglebone-yocto.rootfs-20251027180958.tar.bz2 -C /srv/nfs/rootfs/s
+
+sudo nano /etc/exports
+	/srv/nfs/rootfs 192.168.7.20(rw,sync,no_subtree_check,no_root_squash)
+
+sudo exportfs -ra
+sudo systemctl restart nfs-kernel-server
+
+sudo exportfs -v
+	/srv/nfs/rootfs  192.168.7.20(rw,wdelay,no_root_squash,...)
+
+
+
+creating boot.script
+	sudo mkimage -A arm -T script -C none -n "TFTP Boot" -d boot.script boot.scr
+
+	echo "=== Starting Auto TFTP Boot for BeagleBone Black ==="
+
+	setenv serverip 192.168.7.10
+	setenv ipaddr 192.168.7.20
+
+	setenv bootfile zImage
+	setenv fdtfile am335x-boneblack.dtb
+	setenv loadaddr 0x82000000
+	setenv fdtaddr 0x88000000
+
+	# NFS Root filesystem path
+	setenv rootpath /srv/nfs/rootfs
+	setenv bootargs "console=ttyS0,115200n8 root=/dev/nfs rw nfsroot=${serverip}:${rootpath},v3,tcp ip=${ipaddr}:${serverip}::255.255.255.0::eth0:off"
+
+	# Boot command: fetch kernel + dtb, boot
+	setenv linuxboot "tftpboot ${loadaddr} ${bootfile}; tftpboot ${fdtaddr} ${fdtfile}; bootz ${loadaddr} - ${fdtaddr}"
+
+	saveenv
+	run linuxboot
+
+
+Onetime or when you change boot.scr above
+setenv serverip 192.168.7.10
+setenv ipaddr 192.168.7.20
+ping 192.168.7.10
+setenv bootcmd 'tftpboot 0x81000000 boot.scr; source 0x81000000'
+saveenv
+reset
