@@ -5,3 +5,5 @@ cd tisdk
 cd build
 . conf/setenv
 MACHINE=beaglebone bitbake core-image-minimal
+
+Link: https://software-dl.ti.com/processor-sdk-linux/esd/AM335X/09_01_00_001/exports/docs/linux/Overview_Building_the_SDK.html
