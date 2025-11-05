@@ -1,0 +1,7 @@
+
+git clone https://git.ti.com/git/arago-project/oe-layersetup.git tisdk
+cd tisdk
+./oe-layertool-setup.sh -f configs/processor-sdk/processor-sdk-scarthgap-10.00.07.04-config.txt
+cd build
+. conf/setenv
+MACHINE=beaglebone bitbake core-image-minimal
