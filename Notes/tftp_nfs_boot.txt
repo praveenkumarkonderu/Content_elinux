@@ -27,7 +27,7 @@ NFS:
 sudo mkdir -p /srv/nfs/rootfs
 
 extract RFS to above 
-sudo tar -xvjf core-image-minimal-beaglebone-yocto.rootfs-20251027180958.tar.bz2 -C /srv/nfs/rootfs/s
+sudo tar -xvjf core-image-minimal-beaglebone-yocto.rootfs-20251027180958.tar.bz2 -C /srv/nfs/rootfs/
 
 sudo nano /etc/exports
 	/srv/nfs/rootfs 192.168.7.20(rw,sync,no_subtree_check,no_root_squash)
